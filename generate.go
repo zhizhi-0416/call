@@ -9,9 +9,6 @@ import (
 	"time"
 )
 
-const StudentNum = 90 //一节课90个学生
-const ClassNum = 20   //一共上20节课
-
 // GenerateData 生成第i门课的数据
 func GenerateData(lessonId int) Lesson {
 
@@ -27,7 +24,7 @@ func GenerateData(lessonId int) Lesson {
 	for i := 0; i < StudentNum; i++ {
 		students[i] = &Student{
 			Id:     i,
-			Weight: 1,                      //权重初始化为1
+			Weight: 0,                      //权重初始化为0
 			IsRun:  make([]bool, ClassNum), //20次记录，默认为false即不逃课
 		}
 	}
@@ -71,7 +68,7 @@ func GenerateData(lessonId int) Lesson {
 func WriteToFile(lesson *Lesson) error {
 	//根据课程id获取文件路径
 	fpath := fmt.Sprintf("lesson-%d.txt", lesson.Id)
-	file, err := os.OpenFile(fpath, os.O_CREATE|os.O_WRONLY, os.ModePerm) //以创建写入的方式打开文件
+	file, err := os.OpenFile(fpath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm) //以创建写入的方式打开文件
 	if err != nil {
 		return err
 	}
@@ -113,4 +110,25 @@ func ReadFile(lessonId int) (*Lesson, error) {
 	}
 	lesson.Students = students
 	return lesson, nil
+}
+
+// GenerateAllLessonFile  生成所有数据并且以文件形式进行保存
+func GenerateAllLessonFile() {
+	for i := 0; i < LessonNum; i++ {
+		data := GenerateData(i + 1)
+		WriteToFile(&data)
+	}
+}
+
+// ReadAllLessonFile  读取五门课程的所有数据
+func ReadAllLessonFile() ([]*Lesson, error) {
+	lessons := make([]*Lesson, 0)
+	for i := 0; i < LessonNum; i++ {
+		lesson, err := ReadFile(i + 1)
+		if err != nil {
+			return nil, err
+		}
+		lessons = append(lessons, lesson)
+	}
+	return lessons, nil
 }
