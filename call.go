@@ -64,7 +64,7 @@ func Call(lesson *Lesson) {
 
 }
 
-//hit 表示点名是否命中
+// hit 表示点名是否命中
 func hit(round int, student *Student) float64 {
 	AllCount++ //增加点到次数
 	if student.IsRun[round] == true {
@@ -79,7 +79,7 @@ func GetResult() float64 {
 	return float64(HitCount) / float64(AllCount)
 }
 
-//随机打乱数组
+// 随机打乱数组
 func randShuffle(slice []*Student) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r.Shuffle(len(slice), func(i, j int) {
